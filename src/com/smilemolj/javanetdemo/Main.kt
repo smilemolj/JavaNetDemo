@@ -1,8 +1,7 @@
-package com.smilemolj.javanetdemo;
+package com.smilemolj.javanetdemo
 
-public class Main {
-
-    public static void main(String[] args) {
-	// write your code here
+object Main {
+    @JvmStatic
+    fun main(args: Array<String>) { // write your code here
     }
 }
