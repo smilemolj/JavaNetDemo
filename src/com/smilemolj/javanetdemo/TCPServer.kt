@@ -4,6 +4,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.ServerSocket
 import java.util.*
+import kotlin.concurrent.thread
 
 object TCPServer {
     @JvmStatic
@@ -21,23 +22,28 @@ object TCPServer {
         val server = ServerSocket(8888)
         while (true) {
             val socket = server.accept()
-            val inputStream = socket.getInputStream()
-            val file = File("/Users/lijunliang/Desktop/server")
-            if (!file.exists()) {
-                file.mkdirs()
-            }
-            val filename = "demo" + System.currentTimeMillis() + Random().nextInt(999999) + ".jpg"
-            val fileOutputStream = FileOutputStream("$file/$filename")
-            val bytes = ByteArray(1024)
-            var len = 0
-            while (inputStream.read(bytes).let { len = it;it != -1 }) {
-                fileOutputStream.write(bytes, 0, len)
+
+            thread {
+                println("当前线程的name：${Thread.currentThread().name}")
+                val inputStream = socket.getInputStream()
+                val file = File("/Users/lijunliang/Desktop/server")
+                if (!file.exists()) {
+                    file.mkdirs()
+                }
+                val filename = "demo" + System.currentTimeMillis() + Random().nextInt(999999) + ".jpg"
+                val fileOutputStream = FileOutputStream("$file/$filename")
+                val bytes = ByteArray(1024)
+                var len = 0
+                while (inputStream.read(bytes).let { len = it;it != -1 }) {
+                    fileOutputStream.write(bytes, 0, len)
+                }
+
+                val outputStream = socket.getOutputStream()
+                outputStream.write("上传成功啦".toByteArray())
+                fileOutputStream.close()
+                socket.close()
             }
 
-            val outputStream = socket.getOutputStream()
-            outputStream.write("上传成功啦".toByteArray())
-            fileOutputStream.close()
-            socket.close()
         }
     }
 }
