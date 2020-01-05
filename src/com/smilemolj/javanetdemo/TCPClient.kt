@@ -8,5 +8,6 @@ object TCPClient {
         val socket=Socket("127.0.0.1",8888)
         val os = socket.getOutputStream()
         os.write("你好服务器".toByteArray())
+        socket.close()
     }
 }
